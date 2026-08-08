@@ -14,8 +14,8 @@ install_package("huggingface_hub")
 
 from huggingface_hub import snapshot_download
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW_DIR = os.path.join(PROJECT_ROOT, "research_info", "raw")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+RAW_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "raw"))
 
 def download_huggingface_datasets():
     print(f"Starting snapshot download of HSI Datasets from Hugging Face to {RAW_DIR}...")
