@@ -5,3 +5,7 @@ __pycache__/
 *.pyc
 .env
 .DS_Store
+research_info/raw/
+research_info/processed/
+research_info/*.h5
+research_info/*.tif

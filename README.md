@@ -1,41 +1,22 @@
-# 🌾 TerraSpectra — Hyperspectral Crop Disease Forecasting
+# TerraSpectra - Hyperspectral Crop Disease Forecasting
 
-**Domain:** Precision Agriculture & Advanced Computer Vision  
-**Status:** Active Development (Week 1 / Phase 5)
+This project is focused on precision agriculture and computer vision to identify crop diseases before visible symptoms appear.
 
----
+## The Problem
+Traditional satellite monitoring uses RGB or multispectral images (NDVI). These only detect crop diseases after the leaves yellow or turn brown, meaning the crop's cell structure has already collapsed and yield loss is unavoidable. Standard 2D-CNN models also cannot handle the deep spectral dimensions of hyperspectral data.
 
-## ⚠️ Problem Statement
-Traditional satellite crop monitoring relies on standard 3-channel RGB or simple 4-channel Multispectral imagery (NDVI). These models suffer from a fatal flaw: **they only detect crop diseases after leaves turn yellow or brown (foliar chlorosis and necrosis)**. By the time visual symptoms appear to human eyes or standard 2D-CNNs, internal cellular structures have already collapsed, making yield loss unrecoverable. 
+## The Solution
+TerraSpectra uses 3D spatial-spectral data cubes containing over 200 contiguous bands from 400nm to 2500nm. The backend uses a hybrid 3D-CNN and Vision Transformer model to spot cellular changes, water loss, and chlorophyll breakdown. This allows the system to predict disease hotspots up to three weeks before visible symptoms show, giving time for targeted treatments.
 
-Furthermore, standard 2D-CNNs treat image input as flat spatial matrices and are fundamentally incapable of processing the massive 3D spatial-spectral depth of Hyperspectral Data Cubes.
+## System Architecture
+*   **Geospatial Data Pipeline:** Python scripts using Rasterio and h5py to load datasets and Scikit-learn PCA to reduce spectral depth down to 32 components.
+*   **Hybrid Model:** A PyTorch model combining 3D convolutions for spatial-spectral features and a Vision Transformer for inter-band correlations.
+*   **Inference API:** FastAPI routes for handling real-time prediction overlays and spatial tiling.
+*   **GIS Dashboard:** React 18 frontend with Deck.gl and Mapbox to overlay heatmaps on satellite basemaps with custom Plotly charts.
 
-## 💡 The TerraSpectra Solution
-**TerraSpectra** ingests **Hyperspectral Satellite Data Cubes** capturing **200+ contiguous spectral bands of light** across the electromagnetic spectrum (400 nm to 2500 nm), analyzing subtle chemical changes in plant chlorophyll absorption, anthocyanin accumulation, and cellular water retention.
-
-Using a **Hybrid 3D-CNN + Vision Transformer (ViT)** AI model, TerraSpectra highlights specific infection zones in glowing red on a 3D WebGL dashboard, predicting a **fungal blight outbreak three weeks before any visible symptoms appear**. This allows farm managers to execute localized preventative treatment, saving 95% of pesticide costs and preserving crop yield.
-
-## 🛠️ Core System Architecture
-1. **Geospatial Data Pipeline (Python):** Ingests and normalizes multi-gigabyte hyperspectral datacubes (HDF5 / GeoTIFF), using Scikit-learn PCA to compress 200+ bands down to 32 principal components.
-2. **Hybrid 3D-CNN & ViT AI Model (PyTorch):** Deep learning architecture utilizing 3D spatial-spectral convolutions alongside a Transformer self-attention engine.
-3. **High-Throughput Inference API (FastAPI):** GPU-accelerated REST API handling spatial chunking and real-time prediction raster generation.
-4. **Interactive GIS Dashboard (React 18 + Deck.gl):** Professional 3D map interface rendering disease heatmaps over satellite topography, equipped with interactive pixel-picking for 224-band spectral reflectance charting.
-
-## 📂 Project Structure (Full-Stack Monorepo)
-```text
-TerraSpectra-Crop-Forecasting/
-├── backend/                  # Python AI Pipeline & API Code
-│   ├── api/                  # FastAPI routes and DTOs
-│   └── ml_pipeline/          # PCA scripts, 3D-CNN, and tensor slicing
-├── frontend/                 # WebGL GIS Dashboard
-│   ├── public/               
-│   └── src/                  # React 18, Deck.gl, Mapbox, TailwindCSS
-├── data/                     # Raw & Processed Datacubes (Git-Ignored)
-├── docs/                     # Executive Planning Documents
-│   ├── WEEK1_MAIN_MASTER.md  
-│   └── WEEK1_MAIN_MASTER.pdf 
-└── research_info/            # R&D Documentation & References
-```
-
-## 🚀 Quick Start
-*See `docs/WEEK1_MAIN_MASTER.pdf` for the complete Phase 1 to Phase 5 execution roadmap.*
+## Folder Structure
+*   `backend/` - FastAPI backend and ML training scripts.
+*   `frontend/` - React application with Deck.gl and Mapbox integration.
+*   `data/` - Holds processed and raw datasets (should be kept clean).
+*   `docs/` - Project specifications and timeline blueprints.
+*   `research_info/` - Contains all gathered HSI datasets, GeoJSON boundaries, mock data, and theoretical research notes.
