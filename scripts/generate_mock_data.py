@@ -20,8 +20,8 @@ import rasterio
 from rasterio.transform import from_bounds
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MOCK_H5_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock_farm_datacube.h5")
-MOCK_TIF_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock_farm_preview.tif")
+MOCK_H5_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock", "mock_farm_datacube.h5")
+MOCK_TIF_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock", "mock_farm_preview.tif")
 
 def generate_mock_datasets(height=512, width=512, num_bands=224):
     print("Generating mock agricultural HDF5 and GeoTIFF datasets...")

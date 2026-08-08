@@ -7,5 +7,4 @@ __pycache__/
 .DS_Store
 research_info/raw/
 research_info/processed/
-research_info/*.h5
-research_info/*.tif
+research_info/mock/
