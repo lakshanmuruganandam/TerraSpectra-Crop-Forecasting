@@ -1,36 +1,46 @@
 """
+download_all_training_datasets.py
+===================================
 TerraSpectra — Master Training Dataset Download Script
-======================================================
-Downloads all hyperspectral benchmark datasets used for training the crop
-disease forecasting model. Covers every dataset listed in ULTIMATE_DATASET_TRACKER.md.
 
-Datasets included:
-    Benchmark Classification (EHU / AVIRIS / EO-1 / Hyperion):
-        - Indian Pines (AVIRIS, 145x145, 200 bands, 16 crop classes)
-        - Salinas Valley corrected (AVIRIS, 512x217, 204 bands, 16 veg classes)
-        - Pavia University (ROSIS, 610x340, 103 bands, 9 urban/veg classes)
-        - Pavia Centre (ROSIS, 1096x715, 102 bands)
-        - Botswana (EO-1 Hyperion, 1476x256, 145 bands, wetland vegetation)
-        - Kennedy Space Center (AVIRIS, 512x614, 176 bands, 13 classes)
-        - Houston 2013 (CASI-1500, 349x1905, 144 bands, GRSS DFC benchmark)
+PURPOSE
+-------
+This script downloads all hyperspectral benchmark datasets needed to train
+the TerraSpectra crop disease forecasting model. It does NOT run automatically.
+Run it manually when you are ready to set up your local training environment.
 
-    Agricultural UAV / Crop-Specific:
-        - WHU-Hi-LongKou (UAV Nano-Hyperspec, 550x400, 270 bands, 9 crop classes)
-        - WHU-Hi-HanChuan (UAV, 1217x303, 274 bands, 16 classes)
-        - WHU-Hi-HongHu (UAV, 940x475, 270 bands, 22 fine-grained classes)
+All files go to research_info/raw/ which is git-ignored.
+Nothing here is downloaded unless you explicitly run this script.
 
-    Spectroradiometer Ground Truth:
-        - USGS Spectral Library v7 leaf & vegetation spectra (CSV)
+USAGE
+-----
+    cd research_info/scripts
+    python3 download_all_training_datasets.py
 
-    Geospatial Ancillary:
-        - Natural Earth countries boundary GeoJSON
-        - Sample Copernicus DEM GeoTIFF tile (Salinas region)
+DATASETS COVERED
+----------------
+    1.  Indian Pines          — AVIRIS, 145×145,   200 bands, 16 crop classes
+    2.  Salinas Valley        — AVIRIS, 512×217,   204 bands, 16 veg classes
+    3.  Pavia University      — ROSIS,  610×340,   103 bands, 9 classes
+    4.  Botswana              — Hyperion, 1476×256, 145 bands, 14 wetland classes
+    5.  Kennedy Space Center  — AVIRIS, 512×614,   176 bands, 13 classes
+    6.  WHU-Hi (LongKou / HanChuan / HongHu) — UAV, 270 bands, 9-22 crop classes
+    7.  Full HSI Collection   — Houston, Trento, Chikusei, Muufl, Augsburg, CRISM
+    8.  USGS Spectral Library — CSV leaf/vegetation spectra (350–2500nm)
+    9.  Natural Earth GeoJSON — World country boundaries
+    10. Iowa State Boundary   — GeoJSON for spatial clipping
 
-Usage:
-    python download_all_training_datasets.py
+REQUIREMENTS
+------------
+    pip install huggingface_hub requests
 
-All files are downloaded to research_info/raw/ which is git-ignored.
-Files > 100MB cannot be pushed to GitHub; use Git LFS or store locally only.
+NOTES
+-----
+    - WHU-Hi and HSI Collection are large (multi-GB). Budget time accordingly.
+    - Files >100MB cannot be pushed to GitHub; raw/ is git-ignored by design.
+    - If a file already exists it is skipped (safe to re-run after interruptions).
+    - Set HF_TOKEN env var for higher HuggingFace rate limits:
+        export HF_TOKEN=your_token_here
 """
 
 import os
@@ -38,7 +48,6 @@ import sys
 import ssl
 import time
 import json
-import hashlib
 import urllib.request
 import subprocess
 
@@ -46,6 +55,7 @@ import subprocess
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 RAW_DIR    = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "raw"))
 os.makedirs(RAW_DIR, exist_ok=True)
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -57,41 +67,38 @@ def install(pkg):
         subprocess.check_call([sys.executable, "-m", "pip", "install", pkg, "-q"])
 
 
-def download(url: str, dest_dir: str, filename: str = None, ssl_verify: bool = True) -> str:
-    """Download url to dest_dir/filename. Returns the saved filepath."""
+def download_file(url: str, dest_dir: str, filename: str = None) -> str:
+    """Download a single file. Skips if already exists."""
     os.makedirs(dest_dir, exist_ok=True)
     filename = filename or os.path.basename(url.split("?")[0])
     filepath = os.path.join(dest_dir, filename)
 
     if os.path.exists(filepath):
         size_mb = os.path.getsize(filepath) / 1e6
-        print(f"  [SKIP] {filename} already exists ({size_mb:.1f} MB)")
+        print(f"  [SKIP] {filename}  ({size_mb:.1f} MB already on disk)")
         return filepath
 
     print(f"  [DL]   {filename}")
     print(f"         {url}")
 
     ctx = ssl.create_default_context()
-    if not ssl_verify:
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
+    req = urllib.request.Request(url, headers={"User-Agent": "TerraSpectra/1.0"})
 
-    req = urllib.request.Request(url, headers={"User-Agent": "TerraSpectra-Downloader/1.0"})
     try:
         with urllib.request.urlopen(req, context=ctx, timeout=120) as resp, \
              open(filepath, "wb") as f:
             total = int(resp.headers.get("Content-Length", 0))
             downloaded = 0
-            block = 65536
             while True:
-                chunk = resp.read(block)
+                chunk = resp.read(65536)
                 if not chunk:
                     break
                 f.write(chunk)
                 downloaded += len(chunk)
                 if total:
                     pct = downloaded / total * 100
-                    print(f"\r         {pct:5.1f}%  {downloaded/1e6:.1f}/{total/1e6:.1f} MB", end="", flush=True)
+                    print(f"\r         {pct:5.1f}%  {downloaded/1e6:.1f}/{total/1e6:.1f} MB",
+                          end="", flush=True)
             print()
     except Exception as e:
         if os.path.exists(filepath):
@@ -104,211 +111,204 @@ def download(url: str, dest_dir: str, filename: str = None, ssl_verify: bool = T
     return filepath
 
 
-def download_hf(repo_id: str, dest_dir: str, repo_type: str = "dataset"):
+def download_hf_repo(repo_id: str, dest_dir: str, repo_type: str = "dataset"):
     """Download an entire Hugging Face repo snapshot."""
     install("huggingface_hub")
     from huggingface_hub import snapshot_download
     os.makedirs(dest_dir, exist_ok=True)
-    print(f"  [HF]   {repo_id} → {dest_dir}")
+    print(f"  [HF]   Downloading {repo_id}")
+    print(f"         Destination: {dest_dir}")
+    token = os.environ.get("HF_TOKEN", None)
+    if not token:
+        print("         Tip: set HF_TOKEN env var for faster downloads")
     try:
         snapshot_download(
             repo_id=repo_id,
             repo_type=repo_type,
             local_dir=dest_dir,
-            local_dir_use_symlinks=False,
+            token=token,
             max_workers=4,
         )
         print(f"         Done.")
     except Exception as e:
-        print(f"  [ERR]  HuggingFace {repo_id}: {e}")
+        print(f"  [ERR]  {repo_id}: {e}")
 
 
-def section(title: str):
-    print(f"\n{'═'*60}")
+def section(title: str, notes: str = ""):
+    print(f"\n{'─'*60}")
     print(f"  {title}")
-    print(f"{'═'*60}")
+    if notes:
+        print(f"  {notes}")
+    print(f"{'─'*60}")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# DATASET DEFINITIONS
+#  DATASET DEFINITIONS
+#  Each entry defines WHERE to get the data and WHERE to save it locally.
+#  Nothing is downloaded until main() is called.
 # ══════════════════════════════════════════════════════════════════════════════
 
-# EHU base — University of the Basque Country hyperspectral image portal
-EHU = "https://www.ehu.eus/ccwintco/uploads"
+DATASETS = [
 
-DATASETS = {
-
-    # ── Indian Pines (via Hugging Face mirror) ────────────────────────────────
-    # NASA AVIRIS, 145×145 px, 200 bands, 16 agricultural crop classes.
-    # EHU direct links return HTTP 403 — use the danaroth HuggingFace mirror.
-    "indian_pines": {
+    # ── 1. Indian Pines ───────────────────────────────────────────────────────
+    {
+        "name": "Indian Pines (AVIRIS)",
+        "notes": "145×145 px · 200 bands · 16 crop classes (corn, soy, wheat, hay…)",
         "subdir": "indian_pines",
+        "hf": "danaroth/indian_pines",
         "files": [],
-        "hf": {"repo_id": "danaroth/indian_pines", "repo_type": "dataset"},
-        "notes": "145×145 px, 200 bands, 16 classes (corn, soybeans, wheat, hay, etc.)",
     },
 
-    # ── Salinas Valley (via Hugging Face mirror) ──────────────────────────────
-    # NASA AVIRIS, California, 512×217 px, 204 bands, 16 crop/vegetation classes.
-    "salinas": {
+    # ── 2. Salinas Valley ─────────────────────────────────────────────────────
+    {
+        "name": "Salinas Valley (AVIRIS)",
+        "notes": "512×217 px · 204 bands · 16 classes (lettuce growth stages, grapes)",
         "subdir": "salinas",
+        "hf": "danaroth/salinas",
         "files": [],
-        "hf": {"repo_id": "danaroth/salinas", "repo_type": "dataset"},
-        "notes": "512×217 px, 204 bands, 16 classes (lettuce growth stages, grapes)",
     },
 
-    # ── Pavia University (via Hugging Face mirror) ────────────────────────────
-    # ROSIS sensor, 610×340 px, 103 bands, 9 urban/vegetation classes.
-    "pavia_university": {
+    # ── 3. Pavia University ───────────────────────────────────────────────────
+    {
+        "name": "Pavia University (ROSIS)",
+        "notes": "610×340 px · 103 bands · 9 classes (meadows, trees, bare soil…)",
         "subdir": "pavia",
+        "hf": "danaroth/pavia_university",
         "files": [],
-        "hf": {"repo_id": "danaroth/pavia_university", "repo_type": "dataset"},
-        "notes": "610×340 px, 103 bands, 9 classes",
     },
 
-    # ── Botswana (via Hugging Face mirror) ────────────────────────────────────
-    # NASA EO-1 Hyperion, 1476×256 px, 145 bands, 14 wetland/vegetation classes.
-    "botswana": {
+    # ── 4. Botswana ───────────────────────────────────────────────────────────
+    {
+        "name": "Botswana (EO-1 Hyperion)",
+        "notes": "1476×256 px · 145 bands · 14 wetland/vegetation classes",
         "subdir": "botswana",
+        "hf": "danaroth/botswana",
         "files": [],
-        "hf": {"repo_id": "danaroth/botswana", "repo_type": "dataset"},
-        "notes": "1476×256 px, 145 bands, 14 wetland/vegetation classes",
     },
 
-    # ── Kennedy Space Center (via Hugging Face mirror) ────────────────────────
-    # NASA AVIRIS, KSC Florida, 512×614 px, 176 bands, 13 classes.
-    "kennedy_space_center": {
+    # ── 5. Kennedy Space Center ───────────────────────────────────────────────
+    {
+        "name": "Kennedy Space Center (AVIRIS)",
+        "notes": "512×614 px · 176 bands · 13 coastal vegetation classes",
         "subdir": "kennedy_space_center",
+        "hf": "danaroth/kennedy_space_center",
         "files": [],
-        "hf": {"repo_id": "danaroth/kennedy_space_center", "repo_type": "dataset"},
-        "notes": "512×614 px, 176 bands, 13 classes",
     },
 
-    # ── WHU-Hi (via Hugging Face) ─────────────────────────────────────────────
-    # UAV-borne Headwall Nano-Hyperspec, 270 bands, Wuhan University.
-    # LongKou: 550×400, 9 crop classes (corn, cotton, sesame, broad bean, etc.)
-    # HanChuan: 1217×303, 16 classes (strawberry, cowpea, soybean, rice, etc.)
-    # HongHu: 940×475, 22 fine-grained classes (most diverse crop HSI dataset)
-    "whu_hi": {
+    # ── 6. WHU-Hi (UAV Crop Dataset) ─────────────────────────────────────────
+    # LongKou 550×400×270, HanChuan 1217×303×274, HongHu 940×475×270
+    # Most directly relevant — sub-metre UAV data with fine-grained crop classes
+    {
+        "name": "WHU-Hi (LongKou + HanChuan + HongHu)",
+        "notes": "UAV · 270 bands · 9–22 crop classes · LARGE (several GB)",
         "subdir": "whu_hi",
+        "hf": "danaroth/whu_hi",
         "files": [],
-        "hf": {"repo_id": "danaroth/whu_hi", "repo_type": "dataset"},
-        "notes": "WHU-Hi: LongKou, HanChuan, HongHu — 270-band UAV crop datasets",
     },
 
-    # ── Full HSI benchmark collection (Hugging Face mirror) ──────────────────
-    # Tanishq165/HSI_Datasets: mirrors all major benchmarks including
-    # Houston 2013, Trento, Muufl, Augsburg, Chikusei, and Mars CRISM spectra.
-    "hsi_collection": {
+    # ── 7. Full HSI Benchmark Collection ─────────────────────────────────────
+    # Houston 2013, Trento, Chikusei, Muufl, Augsburg, Mars CRISM
+    {
+        "name": "Full HSI Benchmark Collection",
+        "notes": "Houston / Trento / Chikusei / Muufl / Augsburg / Mars CRISM · LARGE",
         "subdir": "hsi_collection",
+        "hf": "Tanishq165/HSI_Datasets",
         "files": [],
-        "hf": {"repo_id": "Tanishq165/HSI_Datasets", "repo_type": "dataset"},
-        "notes": "Full benchmark collection: Houston, Trento, Chikusei, Muufl, Augsburg, Mars CRISM",
     },
 
-    # ── USGS Spectral Library v7 leaf samples ─────────────────────────────────
-    # Ground truth spectroradiometer measurements. CSV format with wavelength
-    # (350-2500nm) and reflectance columns for 1000+ vegetation, soil, mineral samples.
-    "usgs_spectral_library": {
+    # ── 8. USGS Spectral Library (CSV) ────────────────────────────────────────
+    {
+        "name": "USGS Spectral Library — Vegetation",
+        "notes": "Leaf/canopy reflectance spectra 350–2500nm · ground truth validation",
         "subdir": "spectral_library",
+        "hf": None,
         "files": [
             (
                 "https://raw.githubusercontent.com/enricoros/spectral-library-samples/master/data/vegetation_spectra.csv",
                 "vegetation_spectra.csv",
-                True,
             ),
         ],
-        "hf": None,
-        "notes": "Leaf and canopy reflectance spectra (350-2500nm) for ground truth validation",
     },
 
-    # ── Natural Earth countries GeoJSON ──────────────────────────────────────
-    # 1:110m resolution world country boundary polygons in GeoJSON format.
-    # Used as the base layer beneath farm boundary overlays in Deck.gl.
-    "geojson_world_boundaries": {
+    # ── 9. Natural Earth Country Boundaries (GeoJSON) ─────────────────────────
+    {
+        "name": "Natural Earth Country Boundaries",
+        "notes": "1:110m GeoJSON · base layer for Deck.gl GeoJsonLayer",
         "subdir": "geospatial",
+        "hf": None,
         "files": [
             (
                 "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson",
                 "countries.geojson",
-                True,
             ),
         ],
-        "hf": None,
-        "notes": "Natural Earth 1:110m world country boundaries for Deck.gl GeoJsonLayer",
     },
 
-    # ── USDA CropScape Iowa field boundary sample ─────────────────────────────
-    "iowa_farm_boundaries": {
+    # ── 10. Iowa State Boundary (GeoJSON) ─────────────────────────────────────
+    {
+        "name": "Iowa State Boundary",
+        "notes": "GeoJSON polygon · spatial clipping for Midwest farm datasets",
         "subdir": "geospatial",
+        "hf": None,
         "files": [
             (
                 "https://raw.githubusercontent.com/unitedstates/districts/gh-pages/states/IA/shape.geojson",
                 "iowa_state_boundary.geojson",
-                True,
             ),
         ],
-        "hf": None,
-        "notes": "Iowa state boundary polygon for spatial clipping of farm datasets",
     },
 
-}
+]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# RUNNER
+#  MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
-    print("\nTerraSpectra Master Training Dataset Downloader")
-    print(f"Output directory: {RAW_DIR}\n")
+    print("\n" + "═" * 60)
+    print("  TerraSpectra — Training Dataset Downloader")
+    print("  Run this script to fetch all datasets locally.")
+    print(f"  Output: {RAW_DIR}")
+    print("═" * 60)
 
-    failed = []
     success = []
+    failed  = []
 
-    for key, cfg in DATASETS.items():
-        section(f"{key.upper()}  —  {cfg['notes']}")
-        dest = os.path.join(RAW_DIR, cfg["subdir"])
+    for ds in DATASETS:
+        section(ds["name"], ds["notes"])
+        dest = os.path.join(RAW_DIR, ds["subdir"])
 
-        # Direct HTTP downloads
-        for (url, fname, ssl_verify) in cfg.get("files", []):
-            result = download(url, dest, fname, ssl_verify=ssl_verify)
-            if result:
-                success.append(fname)
-            else:
-                failed.append(fname)
+        # Direct HTTP file downloads
+        for entry in ds.get("files", []):
+            url, fname = entry[0], entry[1]
+            result = download_file(url, dest, fname)
+            (success if result else failed).append(fname)
 
-        # Hugging Face snapshot download
-        if cfg.get("hf"):
-            download_hf(
-                repo_id=cfg["hf"]["repo_id"],
-                dest_dir=dest,
-                repo_type=cfg["hf"].get("repo_type", "dataset"),
-            )
+        # HuggingFace snapshot download
+        if ds.get("hf"):
+            download_hf_repo(ds["hf"], dest)
 
     # ── Summary ───────────────────────────────────────────────────────────────
-    section("DOWNLOAD SUMMARY")
-    print(f"  Successful : {len(success)} files")
-    print(f"  Failed     : {len(failed)} files")
+    section("DOWNLOAD COMPLETE")
+    print(f"  Direct files OK : {len(success)}")
     if failed:
-        print("\n  Failed files:")
+        print(f"  Failed          : {len(failed)}")
         for f in failed:
-            print(f"    ✗ {f}")
-    print(f"\n  All files saved to: {RAW_DIR}")
-    print("  Note: raw/ is git-ignored. These files are local only.")
-    print("  To share, upload to Google Drive / S3 / HuggingFace Hub.")
+            print(f"    ✗  {f}")
 
-    # Write a manifest JSON for reproducibility
+    # Write manifest
     manifest = {
         "downloaded_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "raw_dir": RAW_DIR,
-        "datasets": {k: v["notes"] for k, v in DATASETS.items()},
+        "datasets": [{"name": d["name"], "notes": d["notes"]} for d in DATASETS],
         "failed": failed,
     }
     manifest_path = os.path.join(RAW_DIR, "download_manifest.json")
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2)
-    print(f"  Manifest   : {manifest_path}")
+    print(f"\n  Manifest saved → {manifest_path}")
+    print("  Note: raw/ is git-ignored. These files stay local only.")
 
 
 if __name__ == "__main__":
