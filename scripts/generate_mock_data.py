@@ -3,15 +3,13 @@ import sys
 import subprocess
 
 def install_package(package_name):
-    print(f"Checking for package: {package_name}...")
     try:
         __import__(package_name)
     except ImportError:
         print(f"Installing {package_name}...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", package_name])
 
-# Ensure required packages are installed
-install_package("huggingface_hub")
+# Ensure h5py, numpy, and rasterio are installed
 install_package("h5py")
 install_package("numpy")
 install_package("rasterio")
@@ -20,31 +18,13 @@ import numpy as np
 import h5py
 import rasterio
 from rasterio.transform import from_bounds
-from huggingface_hub import snapshot_download
 
-# Define paths relative to the project root
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RAW_DIR = os.path.join(PROJECT_ROOT, "research_info", "raw")
 MOCK_H5_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock_farm_datacube.h5")
 MOCK_TIF_PATH = os.path.join(PROJECT_ROOT, "research_info", "mock_farm_preview.tif")
 
-def download_huggingface_datasets():
-    print(f"\n[1/2] Starting snapshot download of HSI Datasets to {RAW_DIR}...")
-    try:
-        snapshot_download(
-            repo_id="Tanishq165/HSI_Datasets",
-            repo_type="dataset",
-            local_dir=RAW_DIR,
-            local_dir_use_symlinks=False,
-            max_workers=4
-        )
-        print("Hugging Face dataset download completed successfully.")
-    except Exception as e:
-        print(f"Error downloading from Hugging Face: {e}")
-        sys.exit(1)
-
 def generate_mock_datasets(height=512, width=512, num_bands=224):
-    print(f"\n[2/2] Generating mock agricultural HDF5 and GeoTIFF datasets...")
+    print("Generating mock agricultural HDF5 and GeoTIFF datasets...")
     try:
         # Generate Wavelengths (400nm to 2500nm)
         wavelengths = np.linspace(400, 2500, num_bands)
@@ -131,10 +111,4 @@ def generate_mock_datasets(height=512, width=512, num_bands=224):
         sys.exit(1)
 
 if __name__ == "__main__":
-    print("==================================================")
-    print("      TerraSpectra: Dataset Setup Utility          ")
-    print("==================================================")
-    download_huggingface_datasets()
     generate_mock_datasets()
-    print("\nSetup successfully completed! All datasets ready.")
-    print("==================================================")
