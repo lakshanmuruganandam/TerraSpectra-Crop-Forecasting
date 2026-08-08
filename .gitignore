@@ -1,5 +1,5 @@
 secret/
-data/
+# data/ — now tracked as empty placeholder
 node_modules/
 __pycache__/
 *.pyc
