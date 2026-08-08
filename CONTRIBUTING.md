@@ -7,17 +7,13 @@ This document tracks the individual contributions, module ownership, and specifi
 ## Lakshan Muruganandam
 
 **Key Contributions & Files:**
-* `docs/WEEK1_MAIN_MASTER.md` - Drafted the master project blueprint and phase timelines.
-* `README.md` - Established the repository documentation and project overview.
-* Setup the GitHub Monorepo directory architecture and branch strategy.
-* *(Add specific files here as they are developed)*
+* *(Add specific files edited or created here)*
 
 ---
 
 ## Kishansingh Rajeshsingh Chauhan
 
 **Key Contributions & Files:**
-* *(List specific tasks completed, e.g., "Researched Hyperspectral Data sources")*
 * *(Add specific files edited or created here)*
 
 ---
@@ -25,7 +21,6 @@ This document tracks the individual contributions, module ownership, and specifi
 ## Prathamesh Lad
 
 **Key Contributions & Files:**
-* *(List specific tasks completed)*
 * *(Add specific files edited or created here)*
 
 ---
@@ -33,7 +28,6 @@ This document tracks the individual contributions, module ownership, and specifi
 ## Rashmi R K
 
 **Key Contributions & Files:**
-* *(List specific tasks completed)*
 * *(Add specific files edited or created here)*
 
 ---
