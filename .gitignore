@@ -3,8 +3,36 @@ data/
 node_modules/
 __pycache__/
 *.pyc
+*.pyo
 .env
 .DS_Store
+
+# Raw binary datasets — too large for GitHub (use download_all_training_datasets.py)
 research_info/raw/
 research_info/processed/
 research_info/mock/
+
+# Python virtual environments
+backend/venv/
+venv/
+.venv/
+env/
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Test coverage reports
+htmlcov/
+.coverage
+coverage.xml

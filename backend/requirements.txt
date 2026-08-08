@@ -1,9 +1,0 @@
-fastapi
-uvicorn
-numpy
-scikit-learn
-h5py
-rasterio
-torch
-torchvision
-pydantic
