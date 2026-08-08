@@ -138,93 +138,49 @@ EHU = "https://www.ehu.eus/ccwintco/uploads"
 
 DATASETS = {
 
-    # ── Indian Pines ─────────────────────────────────────────────────────────
-    # NASA AVIRIS, 145×145 pixels, 220 original bands (corrected = 200 bands
-    # after water absorption removal), 16 agricultural crop classes.
-    # Standard benchmark in nearly every HSI classification paper since 2010.
+    # ── Indian Pines (via Hugging Face mirror) ────────────────────────────────
+    # NASA AVIRIS, 145×145 px, 200 bands, 16 agricultural crop classes.
+    # EHU direct links return HTTP 403 — use the danaroth HuggingFace mirror.
     "indian_pines": {
         "subdir": "indian_pines",
-        "files": [
-            (f"{EHU}/6/67/Indian_pines_corrected.mat", "Indian_pines_corrected.mat", False),
-            (f"{EHU}/c/c4/Indian_pines_gt.mat",        "Indian_pines_gt.mat",        False),
-        ],
-        "hf": None,
+        "files": [],
+        "hf": {"repo_id": "danaroth/indian_pines", "repo_type": "dataset"},
         "notes": "145×145 px, 200 bands, 16 classes (corn, soybeans, wheat, hay, etc.)",
     },
 
-    # ── Salinas Valley (corrected) ────────────────────────────────────────────
-    # NASA AVIRIS, California, 512×217 px, 204 bands (water bands removed),
-    # 16 classes: lettuce fields at different growth stages, grapes, fallow.
-    # One of the highest spatial resolution airborne agricultural benchmarks.
+    # ── Salinas Valley (via Hugging Face mirror) ──────────────────────────────
+    # NASA AVIRIS, California, 512×217 px, 204 bands, 16 crop/vegetation classes.
     "salinas": {
         "subdir": "salinas",
-        "files": [
-            (f"{EHU}/a/a3/Salinas_corrected.mat", "Salinas_corrected.mat", False),
-            (f"{EHU}/f/fa/Salinas_gt.mat",         "Salinas_gt.mat",        False),
-        ],
-        "hf": None,
+        "files": [],
+        "hf": {"repo_id": "danaroth/salinas", "repo_type": "dataset"},
         "notes": "512×217 px, 204 bands, 16 classes (lettuce growth stages, grapes)",
     },
 
-    # ── Salinas-A (small subset) ──────────────────────────────────────────────
-    "salinas_a": {
-        "subdir": "salinas",
-        "files": [
-            (f"{EHU}/d/df/SalinasA_corrected.mat", "SalinasA_corrected.mat", False),
-            (f"{EHU}/a/aa/SalinasA_gt.mat",         "SalinasA_gt.mat",        False),
-        ],
-        "hf": None,
-        "notes": "83×86 subset of Salinas, 6 classes",
-    },
-
-    # ── Pavia University ─────────────────────────────────────────────────────
-    # ROSIS sensor, University of Pavia campus, Italy, 610×340 px, 103 bands.
-    # 9 classes including asphalt, meadows, trees, bare soil.
+    # ── Pavia University (via Hugging Face mirror) ────────────────────────────
+    # ROSIS sensor, 610×340 px, 103 bands, 9 urban/vegetation classes.
     "pavia_university": {
         "subdir": "pavia",
-        "files": [
-            (f"{EHU}/e/ee/PaviaU.mat",    "PaviaU.mat",    False),
-            (f"{EHU}/5/50/PaviaU_gt.mat", "PaviaU_gt.mat", False),
-        ],
-        "hf": None,
+        "files": [],
+        "hf": {"repo_id": "danaroth/pavia_university", "repo_type": "dataset"},
         "notes": "610×340 px, 103 bands, 9 classes",
     },
 
-    # ── Pavia Centre ─────────────────────────────────────────────────────────
-    "pavia_centre": {
-        "subdir": "pavia",
-        "files": [
-            (f"{EHU}/e/e3/Pavia.mat",    "Pavia.mat",    False),
-            (f"{EHU}/5/53/Pavia_gt.mat", "Pavia_gt.mat", False),
-        ],
-        "hf": None,
-        "notes": "1096×715 px, 102 bands",
-    },
-
-    # ── Botswana ─────────────────────────────────────────────────────────────
-    # NASA EO-1 Hyperion satellite, Okavango Delta, Botswana.
-    # 1476×256 px, 145 bands (after noise/water removal from 242).
-    # 14 land cover classes: water, wetland vegetation, seasonal swamp.
+    # ── Botswana (via Hugging Face mirror) ────────────────────────────────────
+    # NASA EO-1 Hyperion, 1476×256 px, 145 bands, 14 wetland/vegetation classes.
     "botswana": {
         "subdir": "botswana",
-        "files": [
-            (f"{EHU}/7/72/Botswana.mat",    "Botswana.mat",    False),
-            (f"{EHU}/5/58/Botswana_gt.mat", "Botswana_gt.mat", False),
-        ],
-        "hf": None,
+        "files": [],
+        "hf": {"repo_id": "danaroth/botswana", "repo_type": "dataset"},
         "notes": "1476×256 px, 145 bands, 14 wetland/vegetation classes",
     },
 
-    # ── Kennedy Space Center ─────────────────────────────────────────────────
+    # ── Kennedy Space Center (via Hugging Face mirror) ────────────────────────
     # NASA AVIRIS, KSC Florida, 512×614 px, 176 bands, 13 classes.
-    # Includes coastal mangrove, salt marsh, upland forest — diverse vegetation.
     "kennedy_space_center": {
         "subdir": "kennedy_space_center",
-        "files": [
-            (f"{EHU}/2/26/KSC.mat",    "KSC.mat",    False),
-            (f"{EHU}/a/a6/KSC_gt.mat", "KSC_gt.mat", False),
-        ],
-        "hf": None,
+        "files": [],
+        "hf": {"repo_id": "danaroth/kennedy_space_center", "repo_type": "dataset"},
         "notes": "512×614 px, 176 bands, 13 classes",
     },
 
