@@ -57,4 +57,6 @@
 
 ## Rashmi R K
 
-*(Add your files and contributions here)*
+Added Indian Pines hyperspectral dataset.
+Added data/indianpinearray.npy-hyperspectral image data
+Added data/IPgt.npy-ground-truth labels for the Indian Pines dataset
