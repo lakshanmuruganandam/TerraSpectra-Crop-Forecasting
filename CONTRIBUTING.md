@@ -31,30 +31,23 @@
 - `research_info/backend/ml_pipeline/generate_synthetic_hsi.py` — Generates a synthetic AVIRIS-like HDF5 hyperspectral cube with realistic vegetation spectral signature
 - `research_info/backend/ml_pipeline/generate_mock_datasets.py` — Mass-generates synthetic `.mat` fallback files for all 10 benchmark datasets with correct variable names and spectral signatures
 
-**Frontend Scaffold**
+**Frontend WebGL GIS Dashboard (Phase 4)**
 
-- `research_info/frontend/src/App.tsx` — Root React component, entry point for the GIS dashboard
-- `research_info/frontend/src/index.css` — Global styles and Tailwind CSS directives
-- `research_info/frontend/src/main.tsx` — React DOM render entry point
-- `research_info/frontend/package.json` — Node.js manifest with all frontend dependencies (deck.gl, mapbox-gl, plotly.js, zustand, vitest)
-- `research_info/frontend/vite.config.ts` — Vite bundler config
-- `research_info/frontend/tailwind.config.js` — Tailwind CSS theme configuration
-- `research_info/frontend/index.html` — HTML entry point
+- `frontend/src/App.tsx` — Full React 19 + Mapbox GL JS + Deck.gl application layout with telemetry HUD
+- `frontend/src/store/useAppStore.ts` — Central Zustand state store managing map viewport, layer toggles, selected pixels, and timeline state
+- `frontend/src/components/SpectralDrawer.tsx` — Plotly.js slide-over inspector plotting 224-band reflectance curves (400nm - 2500nm) with Red Edge slope & Chlorophyll dip annotations
+- `frontend/src/components/LayerControl.tsx` — Glassmorphism floating control card with layer toggles, opacity sliders, and location presets (Ahmedabad, Salinas CA, Indian Pines, WHU-Hi China)
+- `frontend/src/components/TimelineSlider.tsx` — Bottom-anchored time scrubbing control with Play/Pause animation for tracking disease progression across weeks
+- `frontend/src/layers/farmBoundaryLayer.ts` — Deck.gl GeoJsonLayer for boundaries and BitmapLayer for dynamic AI Blight Risk heatmaps
+- `frontend/src/data/mockFarmFields.ts` — Rich GeoJSON dataset and 224-band synthetic spectral curve generator
 
 ---
 
 ## Kishansingh Rajeshsingh Chauhan
 
-## Kishansingh Rajeshsingh Chauhan
+Set up the frontend base map — React + Vite + TypeScript app inside `frontend/`. Got the base map working with Mapbox and Deck.gl (satellite view, full pan/zoom/rotate/tilt). Added a Deck.gl layer on top for farm field boundaries, using mock GeoJSON data for placeholder fields near Ahmedabad with hover tooltips and live lat/lng readout.
 
-Set up the frontend — React + Vite + TypeScript app inside `frontend/`.
-
-Got the base map working with Mapbox and Deck.gl (satellite view, full pan/zoom/rotate/tilt). Added a Deck.gl layer on top for farm field boundaries, using mock GeoJSON data for now since real farm data isn't in yet — 3 placeholder fields near Ahmedabad. Also added hover tooltips on the fields and a small live readout showing lat/lng/zoom in the corner.
-
-Files:
-- `frontend/src/App.tsx` main map component
-- `frontend/src/layers/farmBoundaryLayer.ts` the boundary layer
-- `frontend/src/data/mockFarmFields.ts` placeholder field data (has `fieldId` so it's easy to hook up real backend data later)
+---
 
 ## Prathamesh Lad
 
@@ -64,6 +57,6 @@ Files:
 
 ## Rashmi R K
 
-Added Indian Pines hyperspectral dataset.
-Added data/indianpinearray.npy-hyperspectral image data
-Added data/IPgt.npy-ground-truth labels for the Indian Pines dataset
+Added Indian Pines hyperspectral dataset:
+- `data/indianpinearray.npy` — Hyperspectral image data array
+- `data/IPgt.npy` — Ground-truth labels for the Indian Pines dataset
