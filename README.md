@@ -15,12 +15,8 @@ TerraSpectra uses 3D spatial-spectral data cubes containing over 200 contiguous 
 *   **GIS Dashboard:** React 18 frontend with Deck.gl and Mapbox to overlay heatmaps on satellite basemaps with custom Plotly charts.
 
 ## Folder Structure
-*   `docs/` - Project specifications and master specs (`WEEK1_MAIN_MASTER.md`, `WEEK1_MAIN_MASTER.pdf`).
-*   `research_info/` - Central directory containing all research documentation, specs, datasets, scripts, backend, and frontend:
-    *   `research_info/backend/` - FastAPI backend architecture and ML pipeline generators.
-    *   `research_info/frontend/` - React 18 + Deck.gl + Mapbox GIS dashboard UI application.
-    *   `research_info/scripts/` - Dataset downloader scripts (`download_all_training_datasets.py`, `download_datasets.py`) and synthetic mock data generator (`generate_mock_data.py`).
-    *   `research_info/raw/` & `research_info/processed/` - Folders for downloading raw satellite data and saving preprocessed outputs.
-    *   `research_info/mock/` - Contains generated mock HDF5 cubes and GeoTIFF previews for testing without real satellite downloads.
-*   `secret/` - Additional reference blueprints and initial project planning documents.
-
+*   `backend/` - FastAPI backend and ML training scripts.
+*   `frontend/` - React application with Deck.gl and Mapbox integration.
+*   `data/` - Holds processed and raw datasets (should be kept clean).
+*   `docs/` - Project specifications and timeline blueprints.
+*   `research_info/` - Contains all gathered HSI datasets, GeoJSON boundaries, mock data, and theoretical research notes.

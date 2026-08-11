@@ -25,37 +25,38 @@
 - `research_info/scripts/download_datasets.py` — HuggingFace snapshot downloader for the Tanishq165/HSI_Datasets collection
 - `research_info/scripts/generate_mock_data.py` — Synthetic 200×200×224 band HDF5 agricultural datacube generator with embedded blight zone, plus RGB GeoTIFF preview
 
-**Backend (Research & Scaffolding)**
+**Backend**
 
 - `research_info/backend/requirements.txt` — Full Python dependency list (FastAPI, uvicorn, rasterio, h5py, PyTorch, scikit-learn, mlflow, wandb, evidently, pytest and more)
 - `research_info/backend/ml_pipeline/generate_synthetic_hsi.py` — Generates a synthetic AVIRIS-like HDF5 hyperspectral cube with realistic vegetation spectral signature
 - `research_info/backend/ml_pipeline/generate_mock_datasets.py` — Mass-generates synthetic `.mat` fallback files for all 10 benchmark datasets with correct variable names and spectral signatures
 
-**Frontend WebGL GIS Dashboard (Research & Scaffolding)**
+**Frontend WebGL GIS Dashboard (Phase 4)**
 
-- `research_info/frontend/src/App.tsx` — Full React 19 + Mapbox GL JS + Deck.gl application layout with telemetry HUD
-- `research_info/frontend/src/store/useAppStore.ts` — Central Zustand state store managing map viewport, layer toggles, selected pixels, and timeline state
-- `research_info/frontend/src/components/SpectralDrawer.tsx` — Plotly.js slide-over inspector plotting 224-band reflectance curves (400nm - 2500nm) with Red Edge slope & Chlorophyll dip annotations
-- `research_info/frontend/src/components/LayerControl.tsx` — Glassmorphism floating control card with layer toggles, opacity sliders, and location presets (Ahmedabad, Salinas CA, Indian Pines, WHU-Hi China)
-- `research_info/frontend/src/components/TimelineSlider.tsx` — Bottom-anchored time scrubbing control with Play/Pause animation for tracking disease progression across weeks
-- `research_info/frontend/src/layers/farmBoundaryLayer.ts` — Deck.gl GeoJsonLayer for boundaries and BitmapLayer for dynamic AI Blight Risk heatmaps
-- `research_info/frontend/src/data/mockFarmFields.ts` — Rich GeoJSON dataset and 224-band synthetic spectral curve generator
+- `frontend/src/App.tsx` — Full React 19 + Mapbox GL JS + Deck.gl application layout with telemetry HUD
+- `frontend/src/store/useAppStore.ts` — Central Zustand state store managing map viewport, layer toggles, selected pixels, and timeline state
+- `frontend/src/components/SpectralDrawer.tsx` — Plotly.js slide-over inspector plotting 224-band reflectance curves (400nm - 2500nm) with Red Edge slope & Chlorophyll dip annotations
+- `frontend/src/components/LayerControl.tsx` — Glassmorphism floating control card with layer toggles, opacity sliders, and location presets (Ahmedabad, Salinas CA, Indian Pines, WHU-Hi China)
+- `frontend/src/components/TimelineSlider.tsx` — Bottom-anchored time scrubbing control with Play/Pause animation for tracking disease progression across weeks
+- `frontend/src/layers/farmBoundaryLayer.ts` — Deck.gl GeoJsonLayer for boundaries and BitmapLayer for dynamic AI Blight Risk heatmaps
+- `frontend/src/data/mockFarmFields.ts` — Rich GeoJSON dataset and 224-band synthetic spectral curve generator
 
 ---
 
 ## Kishansingh Rajeshsingh Chauhan
 
-*(Add files and contributions here)*
+Set up the frontend base map — React + Vite + TypeScript app inside `frontend/`. Got the base map working with Mapbox and Deck.gl (satellite view, full pan/zoom/rotate/tilt). Added a Deck.gl layer on top for farm field boundaries, using mock GeoJSON data for placeholder fields near Ahmedabad with hover tooltips and live lat/lng readout.
 
 ---
 
 ## Prathamesh Lad
 
-*(Add files and contributions here)*
+*(Add your files and contributions here)*
 
 ---
 
 ## Rashmi R K
 
-*(Add files and contributions here)*
-
+Added Indian Pines hyperspectral dataset:
+- `data/indianpinearray.npy` — Hyperspectral image data array
+- `data/IPgt.npy` — Ground-truth labels for the Indian Pines dataset

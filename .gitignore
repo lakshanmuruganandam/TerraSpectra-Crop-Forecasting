@@ -1,4 +1,5 @@
-# Node modules & OS files
+secret/
+# data/ — now tracked as empty placeholder
 node_modules/
 __pycache__/
 *.pyc
@@ -6,23 +7,21 @@ __pycache__/
 .env
 .DS_Store
 
-# Raw binary datasets & generated mock outputs — download via scripts when needed
+# Raw binary datasets — too large for GitHub (use download_all_training_datasets.py)
 research_info/raw/
 research_info/processed/
 research_info/mock/
 
 # Python virtual environments
+backend/venv/
 venv/
 .venv/
 env/
-research_info/backend/venv/
 
-# Build outputs & node packages inside research_info/frontend
+# Build outputs
 dist/
 build/
 *.egg-info/
-research_info/frontend/node_modules/
-research_info/frontend/dist/
 
 # IDE and editor files
 .idea/
@@ -30,11 +29,10 @@ research_info/frontend/dist/
 *.swp
 *.swo
 
-# Jupyter notebook checkpoints
+# Jupyter notebooks checkpoints
 .ipynb_checkpoints/
 
 # Test coverage reports
 htmlcov/
 .coverage
 coverage.xml
-
