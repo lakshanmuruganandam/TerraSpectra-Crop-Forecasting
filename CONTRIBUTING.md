@@ -45,9 +45,16 @@
 
 ## Kishansingh Rajeshsingh Chauhan
 
-*(Add your files and contributions here)*
+## Kishansingh Rajeshsingh Chauhan
 
----
+Set up the frontend — React + Vite + TypeScript app inside `frontend/`.
+
+Got the base map working with Mapbox and Deck.gl (satellite view, full pan/zoom/rotate/tilt). Added a Deck.gl layer on top for farm field boundaries, using mock GeoJSON data for now since real farm data isn't in yet — 3 placeholder fields near Ahmedabad. Also added hover tooltips on the fields and a small live readout showing lat/lng/zoom in the corner.
+
+Files:
+- `frontend/src/App.tsx` main map component
+- `frontend/src/layers/farmBoundaryLayer.ts` the boundary layer
+- `frontend/src/data/mockFarmFields.ts` placeholder field data (has `fieldId` so it's easy to hook up real backend data later)
 
 ## Prathamesh Lad
 
