@@ -14,11 +14,141 @@ export interface FarmFieldProperties {
 export const mockFarmFields: FeatureCollection<Polygon, FarmFieldProperties> = {
   type: 'FeatureCollection',
   features: [
+    // ── Indian Pines, Indiana (AVIRIS Test Site ~ -87.00, 40.47) ──────
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'ip-corn-1',
+        name: 'Indian Pines - Corn Sector A',
+        cropType: 'Corn-no till',
+        areaHectares: 34.2,
+        healthScore: 88,
+        blightRisk: 'Low',
+        lastScanned: '2026-08-25',
+        ndviMean: 0.79,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-87.015, 40.462],
+            [-86.995, 40.462],
+            [-86.995, 40.478],
+            [-87.015, 40.478],
+            [-87.015, 40.462],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'ip-soybean-2',
+        name: 'Indian Pines - Soybean Sector B (Foliar Blight)',
+        cropType: 'Soybeans-min till',
+        areaHectares: 26.5,
+        healthScore: 41,
+        blightRisk: 'Severe',
+        lastScanned: '2026-08-28',
+        ndviMean: 0.44,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-86.992, 40.465],
+            [-86.978, 40.465],
+            [-86.978, 40.479],
+            [-86.992, 40.479],
+            [-86.992, 40.465],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'ip-wheat-3',
+        name: 'Indian Pines - Wheat Plot C',
+        cropType: 'Winter Wheat',
+        areaHectares: 19.8,
+        healthScore: 68,
+        blightRisk: 'Moderate',
+        lastScanned: '2026-08-27',
+        ndviMean: 0.63,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-87.012, 40.450],
+            [-86.988, 40.450],
+            [-86.988, 40.460],
+            [-87.012, 40.460],
+            [-87.012, 40.450],
+          ],
+        ],
+      },
+    },
+
+    // ── Salinas Valley, California (AVIRIS Test Site ~ -121.65, 36.67) ──
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'salinas-lettuce-1',
+        name: 'Salinas Valley - Romaine Lettuce Plot 14',
+        cropType: 'Romaine Lettuce',
+        areaHectares: 22.0,
+        healthScore: 84,
+        blightRisk: 'Low',
+        lastScanned: '2026-08-26',
+        ndviMean: 0.77,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-121.668, 36.670],
+            [-121.648, 36.670],
+            [-121.648, 36.685],
+            [-121.668, 36.685],
+            [-121.668, 36.670],
+          ],
+        ],
+      },
+    },
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'salinas-vineyard-2',
+        name: 'Salinas Valley - Pinot Noir Vineyard',
+        cropType: 'Grapes / Vineyard',
+        areaHectares: 31.4,
+        healthScore: 49,
+        blightRisk: 'Moderate',
+        lastScanned: '2026-08-28',
+        ndviMean: 0.52,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-121.645, 36.665],
+            [-121.630, 36.665],
+            [-121.630, 36.680],
+            [-121.645, 36.680],
+            [-121.645, 36.665],
+          ],
+        ],
+      },
+    },
+
+    // ── Ahmedabad Agro Benchmark Site (~ 72.56, 23.03) ───────────────
     {
       type: 'Feature',
       properties: {
         fieldId: 'field-a',
-        name: 'Field Alpha (Lettuce Plot 1)',
+        name: 'Ahmedabad - Field Alpha (Lettuce Plot 1)',
         cropType: 'Romaine Lettuce',
         areaHectares: 18.4,
         healthScore: 92,
@@ -43,7 +173,7 @@ export const mockFarmFields: FeatureCollection<Polygon, FarmFieldProperties> = {
       type: 'Feature',
       properties: {
         fieldId: 'field-b',
-        name: 'Field Beta (Vineyard Zone 4)',
+        name: 'Ahmedabad - Field Beta (Vineyard Zone 4)',
         cropType: 'Thompson Seedless Grapes',
         areaHectares: 24.1,
         healthScore: 64,
@@ -68,7 +198,7 @@ export const mockFarmFields: FeatureCollection<Polygon, FarmFieldProperties> = {
       type: 'Feature',
       properties: {
         fieldId: 'field-c',
-        name: 'Field Gamma (Corn Sector 12)',
+        name: 'Ahmedabad - Field Gamma (Corn Sector 12)',
         cropType: 'Field Corn',
         areaHectares: 12.8,
         healthScore: 38,
@@ -85,6 +215,33 @@ export const mockFarmFields: FeatureCollection<Polygon, FarmFieldProperties> = {
             [72.558, 23.024],
             [72.545, 23.024],
             [72.545, 23.015],
+          ],
+        ],
+      },
+    },
+
+    // ── WHU-Hi Agricultural UAV Benchmark Site (~ 113.68, 30.52) ─────
+    {
+      type: 'Feature',
+      properties: {
+        fieldId: 'whu-cabbage-1',
+        name: 'WHU-Hi LongKou - Brassica Cabbage Site',
+        cropType: 'Chinese Cabbage',
+        areaHectares: 15.6,
+        healthScore: 89,
+        blightRisk: 'Low',
+        lastScanned: '2026-08-20',
+        ndviMean: 0.81,
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [113.670, 30.512],
+            [113.688, 30.512],
+            [113.688, 30.525],
+            [113.670, 30.525],
+            [113.670, 30.512],
           ],
         ],
       },

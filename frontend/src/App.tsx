@@ -59,10 +59,13 @@ function App() {
         const props = info.object.properties as any
         const fieldId = props.fieldId || 'field-a'
 
-        // Determine health status based on field ID for realistic simulation
+        // Determine health status based on field properties for realistic simulation
         let healthStatus: 'healthy' | 'moderate' | 'blighted' = 'healthy'
-        if (fieldId === 'field-b') healthStatus = 'moderate'
-        if (fieldId === 'field-c') healthStatus = 'blighted'
+        if (props.blightRisk === 'Severe' || props.healthScore < 50 || fieldId.includes('soybean') || fieldId === 'field-c') {
+          healthStatus = 'blighted'
+        } else if (props.blightRisk === 'Moderate' || props.healthScore < 75 || fieldId.includes('wheat') || fieldId === 'field-b') {
+          healthStatus = 'moderate'
+        }
 
         setSelectedPixel({
           x: info.x,
@@ -83,7 +86,8 @@ function App() {
   const heatmapLayer = createBlightHeatmapLayer(
     layers.heatmap,
     heatmapOpacity,
-    activeWeekIndex
+    activeWeekIndex,
+    viewState.longitude
   )
 
   return (

@@ -64,13 +64,24 @@ export function createBlightRiskHeatmapCanvas(weekIndex: number = 0): string {
 export function createBlightHeatmapLayer(
   visible: boolean = true,
   opacity: number = 0.75,
-  weekIndex: number = 0
+  weekIndex: number = 0,
+  centerLng: number = -87.0
 ) {
   const image = createBlightRiskHeatmapCanvas(weekIndex)
 
+  // Choose bounding box matching the current viewpoint cluster
+  let bounds: [number, number, number, number] = [-87.02, 40.445, -86.97, 40.485] // Indian Pines default
+  if (centerLng > 70 && centerLng < 75) {
+    bounds = [72.54, 23.01, 72.59, 23.045] // Ahmedabad
+  } else if (centerLng < -115) {
+    bounds = [-121.675, 36.66, -121.625, 36.69] // Salinas Valley
+  } else if (centerLng > 100) {
+    bounds = [113.665, 30.505, 113.695, 30.53] // WHU-Hi LongKou
+  }
+
   return new BitmapLayer({
     id: 'blight-risk-heatmap',
-    bounds: [72.54, 23.01, 72.59, 23.045], // Bounding box enclosing farm polygons
+    bounds,
     image,
     visible,
     opacity,
