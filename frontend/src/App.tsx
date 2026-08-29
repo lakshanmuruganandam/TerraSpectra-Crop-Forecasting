@@ -1,15 +1,38 @@
 import { useCallback } from 'react'
 import DeckGL from '@deck.gl/react'
-import { Map } from 'react-map-gl/mapbox'
+import { Map } from 'react-map-gl/maplibre'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import type { PickingInfo } from '@deck.gl/core'
 import { useAppStore } from './store/useAppStore'
 import { createFarmBoundaryLayer, createBlightHeatmapLayer } from './layers/farmBoundaryLayer'
 import { SpectralDrawer } from './components/SpectralDrawer'
 import { LayerControl } from './components/LayerControl'
 import { TimelineSlider } from './components/TimelineSlider'
-import { Activity, ShieldAlert, Cpu } from 'lucide-react'
+import { Activity, Cpu } from 'lucide-react'
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string
+// Free, open-source high-resolution satellite imagery (ESRI World Imagery) — zero API key / card required
+const SATELLITE_STYLE = {
+  version: 8 as const,
+  sources: {
+    'esri-satellite': {
+      type: 'raster' as const,
+      tiles: [
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      ],
+      tileSize: 256,
+      attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+    },
+  },
+  layers: [
+    {
+      id: 'esri-satellite-layer',
+      type: 'raster' as const,
+      source: 'esri-satellite',
+      minzoom: 0,
+      maxzoom: 19,
+    },
+  ],
+}
 
 function App() {
   const {
@@ -63,24 +86,9 @@ function App() {
     activeWeekIndex
   )
 
-  if (!MAPBOX_TOKEN) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-neutral-950 p-6 text-neutral-100 font-sans">
-        <div className="max-w-md rounded-2xl border border-rose-500/30 bg-neutral-900/80 p-6 text-center shadow-2xl backdrop-blur-xl">
-          <ShieldAlert className="mx-auto h-12 w-12 text-rose-500" />
-          <h2 className="mt-3 text-lg font-bold text-neutral-100">Mapbox Token Missing</h2>
-          <p className="mt-2 text-xs text-neutral-400 leading-relaxed">
-            Please add <code className="rounded bg-neutral-800 px-1.5 py-0.5 text-rose-400">VITE_MAPBOX_TOKEN</code> to your{' '}
-            <code className="rounded bg-neutral-800 px-1.5 py-0.5 text-neutral-300">frontend/.env</code> file to enable WebGL satellite tiles.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="relative h-screen w-screen overflow-hidden bg-neutral-950 font-sans antialiased select-none">
-      {/* WebGL Deck.gl Map Canvas */}
+      {/* WebGL Deck.gl Map Canvas with Free Open Satellite Tiles */}
       <DeckGL
         viewState={viewState}
         onViewStateChange={onViewStateChange}
@@ -92,8 +100,7 @@ function App() {
       >
         <Map
           reuseMaps
-          mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
-          mapboxAccessToken={MAPBOX_TOKEN}
+          mapStyle={SATELLITE_STYLE}
         />
       </DeckGL>
 
